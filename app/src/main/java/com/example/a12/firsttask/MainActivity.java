@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +21,6 @@ public class MainActivity extends Activity {
     private TextView outLength;
     private Spinner externalSpinner, innerSpinner;
 
-    final private String[] data = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    final private String[] data2 = {"not define", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     private List<DPoint> list = new ArrayList();
 
     final private int dimensionOfArea = 1000;
@@ -45,20 +46,19 @@ public class MainActivity extends Activity {
         outX = (TextView) findViewById(R.id.textView20);
         outY = (TextView) findViewById(R.id.textView22);
         outLength = (TextView) findViewById(R.id.textView26);
+        externalSpinner = (Spinner) findViewById(R.id.spinner3);
+        innerSpinner = (Spinner) findViewById(R.id.spinner4);
+        button = (Button) findViewById(R.id.button11);
     }
 
     private double calculateLength(int sizeOfArea) {
-        if (list.get(innerSpinner.getSelectedItemPosition()) != null) {
-            return sizeOfArea / 9;
-        } else {
-            return sizeOfArea / 3;
-        }
+        return list.get(innerSpinner.getSelectedItemPosition()) != null ? sizeOfArea / 9 : sizeOfArea / 3;
     }
 
     private DPoint calculateCoordinates(int sizeOfArea) {
-        Double x = 0.0, y = 0.0;
-        int externalPos = Integer.valueOf(externalSpinner.getSelectedItemPosition());
-        int innerPos = Integer.valueOf(innerSpinner.getSelectedItemPosition());
+        double x = 0.0, y = 0.0;
+        int externalPos = externalSpinner.getSelectedItemPosition();
+        int innerPos = innerSpinner.getSelectedItemPosition();
 
         if (list.get(innerPos) == null) {
             x = sizeOfArea * list.get(externalPos + 1).getX();
@@ -77,10 +77,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String[] data2 =  getResources().getStringArray(R.array.data2);
+        String[] data = getResources().getStringArray(R.array.data);
         setContentView(R.layout.mylayout);
         fillingList();
         initialization();
-
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -88,15 +89,11 @@ public class MainActivity extends Activity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data2);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        externalSpinner = (Spinner) findViewById(R.id.spinner3);
         externalSpinner.setAdapter(adapter);
-        innerSpinner = (Spinner) findViewById(R.id.spinner4);
         innerSpinner.setAdapter(adapter2);
 
         externalSpinner.setSelection(0);
         innerSpinner.setSelection(0);
-
-        button = (Button) findViewById(R.id.button11);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +106,6 @@ public class MainActivity extends Activity {
 
             }
         });
-
     }
 
    }
